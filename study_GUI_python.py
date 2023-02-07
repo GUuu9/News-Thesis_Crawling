@@ -114,53 +114,60 @@ def thesis_craw(event): # Riss 논문 크롤링
     browser = webdriver.Chrome()
     
     # 검색 URL 바로 이동
-    url = "http://www.riss.or.kr/search/Search.do?isDetailSearch=N&searchGubun=true&viewYn=OP&query=지방&queryText=&iStartCount=0&iGroupView=5&icate=re_a_kor&colName=re_a_kor&exQuery=&exQueryText=&order=%2FDESC&onHanja=false&strSort=RANK&pageScale=10&orderBy=&fsearchMethod=search&isFDetailSearch=N&sflag=1&searchQuery=지방&fsearchSort=&fsearchOrder=&limiterList=&limiterListText=&facetList=&facetListText=&fsearchDB=&resultKeyword=지방&pageNumber=1&p_year1=&p_year2=&dorg_storage=&mat_type=&mat_subtype=&fulltext_kind=&t_gubun=&learning_type=&language_code=&ccl_code=&language=&inside_outside=&fric_yn=&image_yn=&regnm=&gubun=&kdc=&ttsUseYn="
+    # url = "http://www.riss.or.kr/index.do"
+    url = 'http://www.riss.kr/search/Search.do?isDetailSearch=N&searchGubun=true&viewYn=OP&query=%EC%9E%90%EB%8F%99%ED%99%94&queryText=&iStartCount=0&iGroupView=5&icate=all&colName=re_a_kor&exQuery=&exQueryText=&order=%2FDESC&onHanja=false&strSort=RANK&pageScale=10&orderBy=&fsearchMethod=search&isFDetailSearch=N&sflag=1&searchQuery=%EC%9E%90%EB%8F%99%ED%99%94&fsearchSort=&fsearchOrder=&limiterList=&limiterListText=&facetList=&facetListText=&fsearchDB=&resultKeyword=%EC%9E%90%EB%8F%99%ED%99%94&pageNumber=1&p_year1=&p_year2=&dorg_storage=&mat_type=&mat_subtype=&fulltext_kind=&t_gubun=&learning_type=&language_code=&ccl_code=&language=&inside_outside=&fric_yn=&image_yn=&regnm=&gubun=&kdc=&ttsUseYn='
     browser.get(url)
     
-    csv = open("naver_news.csv", "a")
-    csv.write("번호, 기사 제목, 기사 요약, 링크\n")
+    csv = open("thesis.csv", "a")
+    csv.write("번호, 기사 제목, 발행기관, 링크\n")
     csv.close()
     
     browser.find_element(By.XPATH, '//*[@id="query"]').click()
     browser.find_element(By.XPATH, '//*[@id="query"]').send_keys(input_box3.get())
     browser.find_element(By.CLASS_NAME, 'btnSearch').click()
+    browser.find_element(By.CLASS_NAME, 'tabM1').click()
+    
+    browser.find_element(By.XPATH, '//*[@id="divContent"]/div/div[2]/div/div[3]/div[1]/div[2]/div[1]/div[1]/label').click()
+    browser.find_element(By.XPATH, '//*[@id="divContent"]/div/div[2]/div/div[3]/div[1]/div[2]/div[1]/div[2]/div/ul/li[3]/a').click()
+    browser.find_element(By.CLASS_NAME, 'listSearch').click()
+    
+    
     
     
     title_list = []
-    content_list = []
+    assigneds_list = []
     link_list = []
     
-    for i in range(5): # 페이지 이동
+    
+    for i in range(3,8): # 페이지 이동
+        contentInner = browser.find_elements(By.CLASS_NAME, 'srchResultListW') # 데이터가 모두 담겨있는 클래스
+    
+        for contentIn in contentInner:    
+            datas = contentIn.find_elements(By.TAG_NAME, 'li')
         
-        # 제목, 내용, 링크
-        titles = browser.find_elements(By.CLASS_NAME, 'news_tit')
-        contents = browser.find_elements(By.CLASS_NAME, 'news_dsc')
-        links = browser.find_elements(By.CLASS_NAME, 'news_tit')
+            for data in datas:
+                titles = data.find_elements(By.CLASS_NAME, 'title')
+                assigneds = data.find_elements(By.CLASS_NAME, 'assigned')
+                
+                for title in titles:
+                    title_list.append(title.text.replace(",", ""))
+                    link = title.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                    link_list.append(link)
+                    
+                for assigned in assigneds:
+                    assigneds_list.append(assigned.text)
         
-        for i in titles:
-            title = i.text
-            title = title.replace(",", "")
-            title_list.append(title)
-
-        for i in contents:
-            content = i.text
-            content = content.replace("," , "")
-            content_list.append(content)
-            
-        for i in links:
-            link = i.get_attribute('href')
-            link_list.append(link)
-
-        browser.find_element(By.CLASS_NAME, "btn_next").click()
+        browser.find_element(By.XPATH, f'//*[@id="divContent"]/div/div[2]/div/div[4]/a[{i}]').click()
         time.sleep(5)
         
     for i in range(len(title_list)):
-            csv = open("naver_news.csv", "a")
-            csv.write(f"{i}, {title_list[i]}, {content_list[i]}, {link_list[i]}\n")
-            csv.close()
+        csv = open("thesis.csv", "a")
+        csv.write(f"{i}, {title_list[i]}, {assigneds_list[i]}, {link_list[i]}\n")
+        csv.close()
+            
 
 window = Tk() # TKinter 생성
-window.geometry("400x300") # 화면의 크기
+window.geometry("500x250") # 화면의 크기
 window.title("크롤링 프로그램") # 프로그램 명
 window.resizable(False, False) # 창 조절 불가
 
@@ -192,5 +199,7 @@ input_box3 = Entry(window, width=20)
 input_box3.grid(column=2, row=4)
 input_box3.bind("<Return>", thesis_craw)
 
+run_btn = Button(window, text="Run")
+run_btn.grid(column=3, row=2)
 
 window.mainloop()

@@ -5,6 +5,7 @@ tkinter 패키지를 통해 UI를 구축하며 입력받은 내용을 기반으�
 또한 해당 기술을 논문 검색에도 적용하여 필요한 논문의 정보를 찾아 정리할 수 있도록 한다.    
 
 |사용 패키지|내용|
+|------|---|
 |selenium| webdriver관리를 통한 데이터 수집|
 |code|- pip3 install selenium|
 |Tkinter|Python UI 구성|

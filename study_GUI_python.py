@@ -19,7 +19,7 @@ import time
 # 		number = input_box.get()
 # 		print(number)
             
-def google_news(event): # 구글 뉴스 크롤링
+def google_news(): # 구글 뉴스 크롤링
     browser = webdriver.Chrome()
     
     # 검색 URL 바로 이동
@@ -65,12 +65,12 @@ def google_news(event): # 구글 뉴스 크롤링
             csv.write(f"{i}, {title_list[i]}, {content_list[i]}, {link_list[i]}\n")
             csv.close()
     
-def naver_news(event): # naver 뉴스 크롤링
+def naver_news(): # naver 뉴스 크롤링
     browser = webdriver.Chrome()
     
     # 검색 URL 바로 이동
     url = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query={}"
-    new_url = url.format(input_box2.get()) 
+    new_url = url.format(input_box1.get()) 
     browser.get(new_url)
     
     csv = open("naver_news.csv", "a")
@@ -110,7 +110,7 @@ def naver_news(event): # naver 뉴스 크롤링
             csv.write(f"{i}, {title_list[i]}, {content_list[i]}, {link_list[i]}\n")
             csv.close()
 
-def thesis_craw(event): # Riss 논문 크롤링
+def thesis_craw(): # Riss 논문 크롤링
     browser = webdriver.Chrome()
     
     # 검색 URL 바로 이동
@@ -123,7 +123,7 @@ def thesis_craw(event): # Riss 논문 크롤링
     csv.close()
     
     browser.find_element(By.XPATH, '//*[@id="query"]').click()
-    browser.find_element(By.XPATH, '//*[@id="query"]').send_keys(input_box3.get())
+    browser.find_element(By.XPATH, '//*[@id="query"]').send_keys(input_box1.get())
     browser.find_element(By.CLASS_NAME, 'btnSearch').click()
     browser.find_element(By.CLASS_NAME, 'tabM1').click()
     
@@ -164,42 +164,49 @@ def thesis_craw(event): # Riss 논문 크롤링
         csv = open("thesis.csv", "a")
         csv.write(f"{i}, {title_list[i]}, {assigneds_list[i]}, {link_list[i]}\n")
         csv.close()
+
+# 라디오 버튼으로 선택된 값에 따라 명령 실행
+
+def crawling_start():
+    if str(Radiodata.get()) == '1':
+        google_news()
+    elif str(Radiodata.get()) == '2':
+        naver_news()
+    elif str(Radiodata.get()) == '3':
+        thesis_craw()
             
 
 window = Tk() # TKinter 생성
-window.geometry("500x250") # 화면의 크기
+window.geometry("450x200") # 화면의 크기
 window.title("크롤링 프로그램") # 프로그램 명
 window.resizable(False, False) # 창 조절 불가
 
 text = Label(window, text="검색하고자 하는 내용 입력", width=20, anchor=CENTER)
 text.grid(column=1, row=1)
 
+
+Radiodata = IntVar() # RadioButton value 값 저장
+
 # 구글
-file_text1 = Label(window, text="구글 뉴스 크롤링")
+file_text1 = Radiobutton(window, text="구글 뉴스 크롤링", value = 1, variable=Radiodata)
 file_text1.grid(column=1, row=2)
 
-input_box1 = Entry(window, width=20)
-input_box1.grid(column=2, row=2)
-input_box1.bind("<Return>", google_news)
-
 # 네이버
-file_text2 = Label(window, text="네이버 뉴스 크롤링")
+file_text2 = Radiobutton(window, text="네이버 뉴스 크롤링", value = 2, variable=Radiodata)
 file_text2.grid(column=1, row=3)
 
-input_box2 = Entry(window, width=20)
-input_box2.grid(column=2, row=3)
-input_box2.bind("<Return>", naver_news)
-
-
 # Riss
-file_text3 = Label(window, text="Riss 논문 크롤링")
+file_text3 = Radiobutton(window, text="Riss 논문 크롤링", value = 3, variable=Radiodata)
 file_text3.grid(column=1, row=4)
 
-input_box3 = Entry(window, width=20)
-input_box3.grid(column=2, row=4)
-input_box3.bind("<Return>", thesis_craw)
+# 값 입력
+input_box1 = Entry(window, width=20)
+input_box1.grid(column=2, row=2)
 
-run_btn = Button(window, text="Run")
+# 실행 버튼
+run_btn = Button(window, text="Run", command=crawling_start)
 run_btn.grid(column=3, row=2)
+
+
 
 window.mainloop()

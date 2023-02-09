@@ -23,3 +23,8 @@ UI 정리.
 각각 분리된 기능을 라디오 버튼으로 묶어서 선택된 데이터만 크롤링 하도록 수정  
 ![image1](image/image_before.png)
 ![image2](image/image_after.png)
+
+
+## 수집한 데이터는 다음처럼 정리된다.
+![pdf1](image/google_news.pdf)
+![pdf2](image/thesis.pdf)

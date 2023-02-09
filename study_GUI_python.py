@@ -4,20 +4,11 @@
 #####
 
 from tkinter import *
-from tkinter.filedialog import askopenfilename
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 import time
-
-# def get_file(): # 외부에서 파일 불러오기 
-# 		print("get_file")
-# 		file_path = askopenfilename()
-# 		print(file_path)
-
-# 		number = input_box.get()
-# 		print(number)
             
 def google_news(): # 구글 뉴스 크롤링
     browser = webdriver.Chrome()
@@ -184,7 +175,6 @@ window.resizable(False, False) # 창 조절 불가
 text = Label(window, text="검색하고자 하는 내용 입력", width=20, anchor=CENTER)
 text.grid(column=1, row=1)
 
-
 Radiodata = IntVar() # RadioButton value 값 저장
 
 # 구글
@@ -206,7 +196,5 @@ input_box1.grid(column=2, row=2)
 # 실행 버튼
 run_btn = Button(window, text="Run", command=crawling_start)
 run_btn.grid(column=3, row=2)
-
-
 
 window.mainloop()

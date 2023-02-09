@@ -26,5 +26,5 @@ UI 정리.
 
 
 ## 수집한 데이터는 다음처럼 정리된다.
-![pdf1](image/google_news.pdf)
-![pdf2](image/thesis.pdf)
+![image3](image/google_news.png)
+![image4](image/thesis.png)

@@ -5,9 +5,10 @@
 
 from tkinter import *
 
+import tkinter.ttk
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
 import time
             
 def google_news(): # 구글 뉴스 크롤링
@@ -27,7 +28,7 @@ def google_news(): # 구글 뉴스 크롤링
     content_list = []
     link_list = []
     
-    for i in range(5): # 페이지 이동
+    for i in range(int(input_box2.get())): # 페이지 이동
         
         # 제목, 내용, 링크
         titles = browser.find_elements(By.CLASS_NAME, 'mCBkyc')
@@ -72,7 +73,7 @@ def naver_news(): # naver 뉴스 크롤링
     content_list = []
     link_list = []
     
-    for i in range(5): # 페이지 이동
+    for i in range(int(input_box2.get())): # 페이지 이동
         
         # 제목, 내용, 링크
         titles = browser.find_elements(By.CLASS_NAME, 'news_tit')
@@ -130,7 +131,7 @@ def thesis_craw(): # Riss 논문 크롤링
     link_list = []
     
     
-    for i in range(3,8): # 페이지 이동
+    for i in range(3,int(input_box2.get())+3): # 페이지 이동
         contentInner = browser.find_elements(By.CLASS_NAME, 'srchResultListW') # 데이터가 모두 담겨있는 클래스
     
         for contentIn in contentInner:    
@@ -159,42 +160,62 @@ def thesis_craw(): # Riss 논문 크롤링
 # 라디오 버튼으로 선택된 값에 따라 명령 실행
 
 def crawling_start():
-    if str(Radiodata.get()) == '1':
+    if (int(input_box2.get()) > 10) or (int(input_box2.get()) < 0):
+        label.config(text='페이지 값을 다시 입력해주세요 범위(1~10)')
+    elif str(Radiodata.get()) == '1':
+        label.config(text='구글 뉴스 크롤링을 시작합니다.')
         google_news()
     elif str(Radiodata.get()) == '2':
+        label.config(text='네이버 뉴스 크롤링을 시작합니다.')
         naver_news()
     elif str(Radiodata.get()) == '3':
+        label.config(text='Riss 논문 크롤링을 시작합니다.')
         thesis_craw()
             
 
 window = Tk() # TKinter 생성
-window.geometry("450x200") # 화면의 크기
+window.geometry("500x200") # 화면의 크기
 window.title("크롤링 프로그램") # 프로그램 명
 window.resizable(False, False) # 창 조절 불가
 
 text = Label(window, text="검색하고자 하는 내용 입력", width=20, anchor=CENTER)
-text.grid(column=1, row=1)
+text.place(x=150, y=0)
+
+text2 = Label(window, text="검색할 페이지 수(MAX 10)", width=20, anchor=CENTER)
+text2.place(x=330, y=0)
+
+text3 = Label(window, text="크롤링할 사이트 선택", width=20)
+text3.place(x=-20, y=0)
 
 Radiodata = IntVar() # RadioButton value 값 저장
 
 # 구글
-file_text1 = Radiobutton(window, text="구글 뉴스 크롤링", value = 1, variable=Radiodata)
-file_text1.grid(column=1, row=2)
+file_text1 = Radiobutton(window, text="구글 뉴스 크롤링", value = 1,variable=Radiodata)
+file_text1.place(x=0, y=30)
+file_text1.select()
 
 # 네이버
 file_text2 = Radiobutton(window, text="네이버 뉴스 크롤링", value = 2, variable=Radiodata)
-file_text2.grid(column=1, row=3)
+file_text2.place(x=0, y=60)
 
 # Riss
 file_text3 = Radiobutton(window, text="Riss 논문 크롤링", value = 3, variable=Radiodata)
-file_text3.grid(column=1, row=4)
+file_text3.place(x=0, y=90)
 
 # 값 입력
 input_box1 = Entry(window, width=20)
-input_box1.grid(column=2, row=2)
+input_box1.place(x=150, y=30)
+
+# 검색 페이지 수
+input_box2 = Entry(window, width=5)
+input_box2.place(x=350, y=30)
+
+# 상태 표시 라벨
+label = Label(window, text = '입력 대기중')
+label.place(x=150, y=60)
 
 # 실행 버튼
 run_btn = Button(window, text="Run", command=crawling_start)
-run_btn.grid(column=3, row=2)
+run_btn.place(x=420, y=150)
 
 window.mainloop()

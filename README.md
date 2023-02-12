@@ -10,6 +10,7 @@ tkinter 패키지를 통해 UI를 구축하며 입력받은 내용을 기반으�
 |code|- pip3 install selenium|
 |Tkinter|Python UI 구성|
 |code|- brew install python-tk|
+|chromeDriver|설치된 크롬 버전과 동일한 드라이버를 작업중인 프로젝트 파일에 위치시킨다|
 
 
 
